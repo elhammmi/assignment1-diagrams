@@ -1,0 +1,67 @@
+@startuml classdiagram
+title Test Case System
+skinparam classAttributeIconSize 0
+
+class TestCase{
+    + id: int = 0
+    + test_case_id: str
+    + name: str
+    + purpose: str
+    + preconditions: str
+    + test_data: str
+    + steps: list[Step] = []
+}
+
+class Step{
+    + id : int
+    + instruction: str
+    + expected_result: str
+}
+
+class RegistrationResult{
+    + succeeded: bool
+    + message: str
+    + errors: list[str]
+    + test_case_data: TestCase | None
+
+}
+
+class InMemoryTestCaseRepository{
+    - _test_case : TestCase [0..*]
+    - _next_id: int
+    + tryAdd(test_cas: TestCase) : TestCase
+    + getAll(): TestCase [0..*]: void
+}
+
+class TestCaseService{
+    - _repository: InMemoryTestCaseRepository
+    + registerTestCase(test_case: TestCase) : RegistrationResult
+    + showTestCases() : TestCase [0..*]
+
+}
+
+class TestCaseDialog{
+    - _service: TestCaseService
+    + addTestCase(): void
+    + getAll(): TestCase [0..*
+    ]
+}
+
+TestCase *-- Step : <<contains>>
+
+RegistrationResult --> TestCase : <<contains>>
+
+
+TestCaseDialog ..> TestCase : <<creates>>
+TestCaseDialog --> TestCaseService : <<uses>>
+
+TestCaseService --> InMemoryTestCaseRepository : <<uses>>
+TestCaseService ..> RegistrationResult : <<return and create>>
+TestCaseService ..> TestCase : <<uses>>
+
+InMemoryTestCaseRepository --> TestCase : <<stores>>
+
+
+
+@enduml
+

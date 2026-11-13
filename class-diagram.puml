@@ -18,7 +18,16 @@ class Step{
     + expected_result: str
 }
 
-class RegistrationResult{
+class CreateTestCaseDto{
+    + test_case_id: str
+    + name: str
+    + purpose: str
+    + preconditions: str
+    + test_data: str
+    + steps: list[Step] = []
+}
+
+class CreateTestCaseResult{
     + succeeded: bool
     + message: str
     + errors: list[str]
@@ -26,40 +35,63 @@ class RegistrationResult{
 
 }
 
+class GetTestCasesResult{
+    + succeeded: bool
+    + message: str | None
+    + errors: list[str]
+    + test_case_data: TestCase [0..*] | None
+
+}
+
 class InMemoryTestCaseRepository{
     - _test_case : TestCase [0..*]
     - _next_id: int
-    + tryAdd(test_cas: TestCase) : TestCase
-    + getAll(): TestCase [0..*]: void
+    + add(test_cas: TestCase) : TestCase
+    + getAll(): TestCase [0..*]
 }
 
 class TestCaseService{
     - _repository: InMemoryTestCaseRepository
-    + registerTestCase(test_case: TestCase) : RegistrationResult
-    + showTestCases() : TestCase [0..*]
+    + registerTestCase(test_case: CreateTestCaseDto) : CreateTestCaseResult
+    + showTestCases() : GetTestCasesResult
 
 }
 
 class TestCaseDialog{
     - _service: TestCaseService
-    + addTestCase(): void
-    + getAll(): TestCase [0..*
-    ]
+    + addTestCase(): None
+    + getTestCases(): None
 }
 
+class App{
+    - __dialog : TestCaseDialog
+    - __service: TestCaseService
+    - __repository: InMemoryTestCaseRepository
+    main(): None
+}
+
+
 TestCase *-- Step : <<contains>>
+CreateTestCaseDto  *-- Step : contains
 
-RegistrationResult --> TestCase : <<contains>>
+CreateTestCaseResult  --> TestCase : <<contains>>
+GetTestCasesResult --> TestCase : <<contains>>
 
 
-TestCaseDialog ..> TestCase : <<creates>>
+TestCaseDialog ..> CreateTestCaseDto  : <<creates>>
 TestCaseDialog --> TestCaseService : <<uses>>
 
 TestCaseService --> InMemoryTestCaseRepository : <<uses>>
-TestCaseService ..> RegistrationResult : <<return and create>>
-TestCaseService ..> TestCase : <<uses>>
+TestCaseService ..> CreateTestCaseResult : creates
+TestCaseService ..> GetTestCasesResult : creates
+TestCaseService ..> CreateTestCaseDto  : <<uses>>
+TestCaseService ..> TestCase : creates
 
 InMemoryTestCaseRepository --> TestCase : <<stores>>
+
+App --> TestCaseDialog : uses
+App ..> TestCaseService : creates
+App ..> InMemoryTestCaseRepository : creates
 
 
 

@@ -1,0 +1,70 @@
+
+@startuml 
+
+title Sequence Diagram - Register Test Case
+
+autonumber
+
+participant "TestCaseDialog" as Dialog
+actor User
+participant "input_helper.py" as Helper
+participant "TestCaseService" as Service
+participant "TestCaseRepository" as Repository
+
+Dialog -> User: Display main menu
+User -> Dialog: Select Register Test Case
+
+Dialog -> Dialog: add_test_case()
+Dialog -> User: Display registration instructions
+
+loop Add another test case
+
+    loop Until input is valid
+        Dialog -> Helper: Request test case information
+        Helper -> User: Prompt for input
+        User --> Helper: Enter information
+        Helper -> Helper: Validate required fields and ID format
+
+        alt Invalid input
+            Helper -> User: Display validation error
+        else Valid input
+            Helper --> Dialog: Return validated input
+        end
+    end
+
+
+    Dialog -> Dialog: Create CreateTestCaseDto
+
+    Dialog -> Service: register_test_case(request)
+    activate Service
+
+    Service -> Service: Validate registration data
+
+    alt Valid data
+        Service -> Service: Create TestCase object
+
+        Service -> Repository: add(test_case)
+        activate Repository
+        Repository -> Repository: Assign ID and save TestCase
+        Repository --> Service: Return
+        deactivate Repository
+
+        Service --> Dialog: CreateTestCaseResult(success=True)
+
+    else Invalid data
+        Service --> Dialog: CreateTestCaseResult(success=False, errors)
+    end
+
+    deactivate Service
+
+    Dialog -> User: Display registration result or errors
+    Dialog -> User: Add another test case?
+    User --> Dialog: Yes / No
+
+end
+
+Dialog -> User: Press Enter to return to menu
+User --> Dialog: Enter
+Dialog -> User: Display main menu
+
+@enduml

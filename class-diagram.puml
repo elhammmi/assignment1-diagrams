@@ -43,17 +43,17 @@ class GetTestCasesResult{
 
 }
 
-class InMemoryTestCaseRepository{
-    - _test_case : TestCase [0..*]
+class TestCaseRepository{
+    - _test_cases : TestCase [0..*]
     - _next_id: int
-    + add(test_cas: TestCase) : TestCase
+    + add(test_case: TestCase) : TestCase
     + getAll(): TestCase [0..*]
 }
 
 class TestCaseService{
-    - _repository: InMemoryTestCaseRepository
-    + registerTestCase(test_case: CreateTestCaseDto) : CreateTestCaseResult
-    + showTestCases() : GetTestCasesResult
+    - _repository: TestCaseRepository
+    + registerTestCase(test_case_dto: CreateTestCaseDto) : CreateTestCaseResult
+    + GetTestCases() : GetTestCasesResult
 
 }
 
@@ -66,7 +66,7 @@ class TestCaseDialog{
 class App{
     - __dialog : TestCaseDialog
     - __service: TestCaseService
-    - __repository: InMemoryTestCaseRepository
+    - __repository: TestCaseRepository
     main(): None
 }
 
@@ -81,17 +81,17 @@ GetTestCasesResult --> TestCase : <<contains>>
 TestCaseDialog ..> CreateTestCaseDto  : <<creates>>
 TestCaseDialog --> TestCaseService : <<uses>>
 
-TestCaseService --> InMemoryTestCaseRepository : <<uses>>
+TestCaseService --> TestCaseRepository : <<uses>>
 TestCaseService ..> CreateTestCaseResult : creates
 TestCaseService ..> GetTestCasesResult : creates
 TestCaseService ..> CreateTestCaseDto  : <<uses>>
 TestCaseService ..> TestCase : creates
 
-InMemoryTestCaseRepository --> TestCase : <<stores>>
+TestCaseRepository --> TestCase : <<stores>>
 
 App --> TestCaseDialog : uses
 App ..> TestCaseService : creates
-App ..> InMemoryTestCaseRepository : creates
+App ..> TestCaseRepository : creates
 
 
 

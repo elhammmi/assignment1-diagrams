@@ -1,5 +1,5 @@
 
-@startuml 
+@startuml register_test_case
 
 title Sequence Diagram - Register Test Case
 

@@ -1,4 +1,5 @@
-@startuml
+
+@startuml add_test_case
 title Register Test Case
 
 start
@@ -11,53 +12,46 @@ partition Dialog {
 repeat
 
     repeat
-        partition Dialog {
-            :Enter test case information;
-            :Normalize inputs;
-            :Validate fields;
+        
+        partition Utilities {
+            :Display input prompts;
+            :Validate and normalize inputs;
         }
-
-        partition Dialog {
-        :Display errors if input is invalid;
-    }
 
     repeat while (Is input invalid?) is (yes) not (no)
 
     partition Dialog {
-        :Create TestCaseDto;
+        :Create CreateTestCaseDto;
         :Send registration request to Service;
     }
 
     partition Service {
-        :Receive TestCaseDto;
+        :Receive CreateTestCaseDto;
         :Validate registration data;
     }
 
     if (Is registration data valid?) then (yes)
-
         partition Service {
             :Create TestCase object;
         }
 
         partition Repository {
-            :Save TestCase in list;
+            :Assign sequential internal ID;
+            :Save TestCase;
         }
 
         partition Service {
             :Return successful CreateTestCaseResult;
         }
-
     else (no)
-
         partition Service {
             :Return failed CreateTestCaseResult\nwith validation errors;
         }
-        
     endif
 
-partition Dialog {
-    :Display registration result\nor validation errors;
-}
+    partition Dialog {
+        :Display registration result\nor validation errors;
+    }
 
 repeat while (Add another test case?) is (yes) not (no)
 
@@ -67,3 +61,6 @@ partition Dialog {
 
 stop
 @enduml
+
+
+

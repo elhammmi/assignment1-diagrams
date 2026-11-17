@@ -1,0 +1,37 @@
+@startuml show_all_test_cases
+title Show All Test Cases
+
+start
+
+partition Dialog {
+    :User selects "Show All Test Cases";
+    :Request test cases from Service;
+}
+
+partition Service {
+    :Receive request;
+    :Request test cases from Repository;
+}
+
+partition Repository {
+    :Retrieve all stored test cases;
+    :Return test case list;
+}
+
+partition Service {
+    :Create GetTestCasesResult;
+    :Return result to Dialog;
+}
+
+partition Dialog {
+    if (Are there any test cases?) then (yes)
+        :Display all test cases\nincluding steps;
+    else (no)
+        :Display "No test cases found";
+    endif
+
+    :Return to main menu;
+}
+
+stop
+@enduml

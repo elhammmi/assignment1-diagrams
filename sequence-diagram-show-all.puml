@@ -1,0 +1,43 @@
+
+@startuml show_all_test_cases
+title Sequence Diagram - Show All Test Cases
+
+autonumber
+
+participant "TestCaseDialog" as Dialog
+actor User
+participant "TestCaseService" as Service
+participant "TestCaseRepository" as Repository
+
+Dialog -> User: Display main menu
+User -> Dialog: Select Show All Test Cases
+
+Dialog -> Dialog: get_test_cases()
+
+Dialog -> Service: get_test_cases()
+activate Service
+
+Service -> Repository: get_all()
+activate Repository
+
+Repository -> Repository: Retrieve stored test cases
+Repository --> Service: Return list[TestCase]
+deactivate Repository
+
+Service -> Service: Create GetTestCasesResult
+Service --> Dialog: Return GetTestCasesResult
+deactivate Service
+
+alt Test cases found
+    loop For each test case
+        Dialog -> User: Display test case information and steps
+    end
+else No test cases found
+    Dialog -> User: Display "No test cases found"
+end
+
+Dialog -> User: Press Enter to return to menu
+User --> Dialog: Enter
+Dialog -> User: Display main menu
+
+@enduml

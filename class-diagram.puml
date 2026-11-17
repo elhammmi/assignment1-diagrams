@@ -59,6 +59,7 @@ class TestCaseService{
 
 class TestCaseDialog{
     - _service: TestCaseService
+    + showMenu()> None
     + addTestCase(): None
     + getTestCases(): None
 }
@@ -70,6 +71,14 @@ class App{
     main(): None
 }
 
+class inputHelper {
+        +get_required_input(prompt: str): str
+        +check_test_case_id(prompt: str): str
+}
+
+class consoleHelper{
+        +clear_screen(): None
+}
 
 TestCase *-- Step : <<contains>>
 CreateTestCaseDto  *-- Step : contains
@@ -80,6 +89,8 @@ GetTestCasesResult --> TestCase : <<contains>>
 
 TestCaseDialog ..> CreateTestCaseDto  : <<creates>>
 TestCaseDialog --> TestCaseService : <<uses>>
+TestCaseDialog ..> inputHelper: uses
+TestCaseDialog ..> consoleHelper : uses
 
 TestCaseService --> TestCaseRepository : <<uses>>
 TestCaseService ..> CreateTestCaseResult : creates
@@ -92,6 +103,8 @@ TestCaseRepository --> TestCase : <<stores>>
 App --> TestCaseDialog : uses
 App ..> TestCaseService : creates
 App ..> TestCaseRepository : creates
+
+
 
 
 

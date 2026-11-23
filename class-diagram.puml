@@ -3,13 +3,13 @@ title Test Case System
 skinparam classAttributeIconSize 0
 
 class TestCase{
-    + id: int = 0
+    + id: int 
     + test_case_id: str
     + name: str
     + purpose: str
     + preconditions: str
     + test_data: str
-    + steps: list[Step] = []
+    + steps: list[Step] 
 }
 
 class Step{
@@ -24,7 +24,7 @@ class CreateTestCaseDto{
     + purpose: str
     + preconditions: str
     + test_data: str
-    + steps: list[Step] = []
+    + steps: list[Step] 
 }
 
 class CreateTestCaseResult{
@@ -47,21 +47,21 @@ class TestCaseRepository{
     - _test_cases : TestCase [0..*]
     - _next_id: int
     + add(test_case: TestCase) : TestCase
-    + getAll(): TestCase [0..*]
+    + get_all(): TestCase [0..*]
 }
 
 class TestCaseService{
     - _repository: TestCaseRepository
-    + registerTestCase(test_case_dto: CreateTestCaseDto) : CreateTestCaseResult
-    + GetTestCases() : GetTestCasesResult
+    + register_test_case(test_case_dto: CreateTestCaseDto) : CreateTestCaseResult
+    + get_test_cases() : GetTestCasesResult
 
 }
 
 class TestCaseDialog{
     - _service: TestCaseService
-    + showMenu()> None
-    + addTestCase(): None
-    + getTestCases(): None
+    + show_menu()> None
+    + add_test_case(): None
+    + get_test_Cases(): None
 }
 
 class App{
@@ -72,33 +72,35 @@ class App{
 }
 
 class inputHelper {
-        +get_required_input(prompt: str): str
-        +check_test_case_id(prompt: str): str
+
+    +get_required_input(prompt: str): str
+    +check_test_case_id(prompt: str): str
 }
 
 class consoleHelper{
-        +clear_screen(): None
+    
+    +clear_screen(): None
 }
 
-TestCase *-- Step : <<contains>>
+TestCase *-- Step : contains
 CreateTestCaseDto  *-- Step : contains
 
-CreateTestCaseResult  --> TestCase : <<contains>>
-GetTestCasesResult --> TestCase : <<contains>>
+CreateTestCaseResult  --> TestCase : contains
+GetTestCasesResult --> TestCase : ontains
 
 
-TestCaseDialog ..> CreateTestCaseDto  : <<creates>>
-TestCaseDialog --> TestCaseService : <<uses>>
+TestCaseDialog ..> CreateTestCaseDto  : creates
+TestCaseDialog --> TestCaseService : uses
 TestCaseDialog ..> inputHelper: uses
 TestCaseDialog ..> consoleHelper : uses
 
-TestCaseService --> TestCaseRepository : <<uses>>
+TestCaseService --> TestCaseRepository : uses
 TestCaseService ..> CreateTestCaseResult : creates
 TestCaseService ..> GetTestCasesResult : creates
-TestCaseService ..> CreateTestCaseDto  : <<uses>>
+TestCaseService ..> CreateTestCaseDto  : uses
 TestCaseService ..> TestCase : creates
 
-TestCaseRepository --> TestCase : <<stores>>
+TestCaseRepository --> TestCase : stores
 
 App --> TestCaseDialog : uses
 App ..> TestCaseService : creates
